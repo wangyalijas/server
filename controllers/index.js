@@ -7,14 +7,14 @@ const indexService = require('../core/services/index')
 
 module.exports = {
   // 注册用户
-  'POST /api/postLoginUp': [generic.dealAccessLog(), async (ctx, next) => {
+  'GET /api/getLoginIn': [generic.dealAccessLog(), async (ctx, next) => {
     const start = new Date();
     let ms;
     try {
-      let data = ctx.request.body
+      let data = ctx.query
       let result = new utilsType.Error()
-      if (data.userNo && data.password && data.name && data.adminName && data.adminPassword) {
-        result = await indexService.postLoginUp(data)
+      if (data.userNo && data.password) {
+        result = await indexService.getLoginIn(data)
       }
       ctx.rest(result)
     } catch (error) {
@@ -88,7 +88,7 @@ module.exports = {
     try {
       let data = ctx.request.body
       let result = new utilsType.Error()
-      if (data.userId && data.userNo && Array.isArray(data.permissions) && data.permissions.length) {
+      if (data.userId && data.userNo && Array.isArray(data.permissions) && data.permissions.length && data.adminName && data.adminPassword) {
         result = await indexService.postUserPermission(data)
       }
       ctx.rest(result)

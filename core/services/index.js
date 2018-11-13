@@ -16,8 +16,8 @@ const model = require('../models/index') // orm映射实体
 const User = model.UserEntity
 const UserPermission = model.UserPermission
 
-// 注册
-async function postLoginUp(msg) {
+// 登录
+async function getLoginIn(msg) {
   const isExit = await generic.isExit(User, {
     userNo: msg.userNo,
     isActive: true
@@ -28,6 +28,10 @@ async function postLoginUp(msg) {
       return true
     }
     return false
+  }
+
+  if (isAdmin) {
+    return new utilsType.Tips(true, )
   }
 
   if (!isExit[0] && isAdmin) {
@@ -91,8 +95,15 @@ async function deleteRegisterUser({userId}) {
 
 // 用户权限分配
 async function postUserPermission(msg) {
+  function isAdmin() {
+    if (enumType.admin.name === 'admin' && enumType.admin.password === '123456') {
+      return true
+    }
+    return false
+  }
   // 检查数据格式是否正确
   const illegalArr = extension.verifyMatchRegular(msg, verifyRule.permission)
+  if (!isAdmin) return new utilsType.Tips(false, '没有权限！', 500)
   if (illegalArr.length) return new utilsType.Tips(false, `非法字段：${illegalArr.join(',')}`, 500)
   // 检查用户信息是否匹配
   const isExit = await generic.isExit(User, {
@@ -120,7 +131,7 @@ async function postUserPermission(msg) {
 module.exports = {
   getUser,
   postUserPermission,
-  postLoginUp,
+  getLoginIn,
   getRegisterUser,
   deleteRegisterUser
 }
