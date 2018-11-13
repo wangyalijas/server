@@ -45,7 +45,6 @@ module.exports = {
     try {
       let data = ctx.query
       let result = new utilsType.Error()
-      console.log(data)
       if (data.currentPage && data.pageSize){
         result = await indexService.getAdminUser(data)
       }
@@ -55,6 +54,22 @@ module.exports = {
       logUtil.logError(ctx, error, ms)
     }
   }],
+  // 删除用户权限
+  'DELETE /api/deleteAdminUser': [generic.dealAccessLog(), async (ctx, next) => {
+  const start = new Date();
+  let ms;
+  try {
+    let data = ctx.query
+    let result = new utilsType.Error()
+    if (data.userId){
+      result = await indexService.deleteAdminUser(data)
+    }
+    ctx.rest(result)
+  } catch (error) {
+    ms = new Date() - start;
+    logUtil.logError(ctx, error, ms)
+  }
+}],
   // 获取权限信息
   'GET /api/getPermissionEnum': [generic.dealAccessLog(), async (ctx, next) => {
     const start = new Date();

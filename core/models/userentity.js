@@ -14,10 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     isActive: DataTypes.BOOLEAN
   }, {});
-  UserEntity.associate = function(models) {
-    this.hasMany(models.UserPermission, {
-      foreignKey: 'userId',
-    })
+  UserEntity.associate = function (models) {
+    this.hasMany(models.UserPermission, {foreignKey: 'userId', targetKey: 'id'})
   };
   return UserEntity;
 };

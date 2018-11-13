@@ -57,16 +57,15 @@ async function getUser(msg) {
   })
 }
 
+// 删除注册用户
 // 获取注册用户信息
 async function getAdminUser({currentPage, pageSize}) {
   let pagination = paginateTypes.pagination(currentPage, pageSize)
-  return await User.findAll({
+  let result = await User.findAll({
     include: [
       {
         model: UserPermission,
-        where: {
-          isActive: true
-        }
+        where: {isActive: true}
       }
     ],
     where: {
@@ -75,6 +74,19 @@ async function getAdminUser({currentPage, pageSize}) {
     raw: true,
     ...pagination
   })
+  return result
+}
+
+// 删除注册用户
+async function deleteAdminUser({userId}) {
+  await User.update({
+    isActive: false
+  }, {
+    where: {
+      [Op.in]: userId
+    }
+  });
+  return new utilsType.Tips(true, '删除成功！')
 }
 
 // 用户权限分配
@@ -109,5 +121,6 @@ module.exports = {
   getUser,
   postUserPermission,
   postLoginUp,
-  getAdminUser
+  getAdminUser,
+  deleteAdminUser
 }
