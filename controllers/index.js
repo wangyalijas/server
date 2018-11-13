@@ -39,14 +39,14 @@ module.exports = {
     }
   }],
   // 查找有管理权限的用户
-  'GET /api/getAdminUser': [generic.dealAccessLog(), async (ctx, next) => {
+  'GET /api/getRegisterUser': [generic.dealAccessLog(), async (ctx, next) => {
     const start = new Date();
     let ms;
     try {
       let data = ctx.query
       let result = new utilsType.Error()
       if (data.currentPage && data.pageSize){
-        result = await indexService.getAdminUser(data)
+        result = await indexService.getRegisterUser(data)
       }
       ctx.rest(result)
     } catch (error) {
@@ -55,14 +55,14 @@ module.exports = {
     }
   }],
   // 删除用户权限
-  'DELETE /api/deleteAdminUser': [generic.dealAccessLog(), async (ctx, next) => {
+  'DELETE /api/deleteRegisterUser': [generic.dealAccessLog(), async (ctx, next) => {
   const start = new Date();
   let ms;
   try {
     let data = ctx.query
     let result = new utilsType.Error()
     if (data.userId){
-      result = await indexService.deleteAdminUser(data)
+      result = await indexService.deleteRegisterUser(data)
     }
     ctx.rest(result)
   } catch (error) {

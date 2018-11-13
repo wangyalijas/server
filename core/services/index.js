@@ -59,7 +59,7 @@ async function getUser(msg) {
 
 // 删除注册用户
 // 获取注册用户信息
-async function getAdminUser({currentPage, pageSize}) {
+async function getRegisterUser({currentPage, pageSize}) {
   let pagination = paginateTypes.pagination(currentPage, pageSize)
   let result = await User.findAll({
     include: [
@@ -78,7 +78,7 @@ async function getAdminUser({currentPage, pageSize}) {
 }
 
 // 删除注册用户
-async function deleteAdminUser({userId}) {
+async function deleteRegisterUser({userId}) {
   await User.update({
     isActive: false
   }, {
@@ -121,6 +121,6 @@ module.exports = {
   getUser,
   postUserPermission,
   postLoginUp,
-  getAdminUser,
-  deleteAdminUser
+  getRegisterUser,
+  deleteRegisterUser
 }
