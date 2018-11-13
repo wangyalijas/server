@@ -2,12 +2,12 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    queryInterface.addColumn('Cases', 'menuKey', {
+    queryInterface.addColumn('Cases', 'status', {
       type: Sequelize.INTEGER
     })
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Cases');
+    return queryInterface.removeColumn('Cases', 'status');
   }
 };
