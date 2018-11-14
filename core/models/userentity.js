@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     isActive: DataTypes.BOOLEAN
   }, {});
   UserEntity.associate = function (models) {
-    this.hasMany(models.UserPermission, {foreignKey: 'userId', targetKey: 'id'})
+    this.permission = this.hasMany(models.UserPermission, {foreignKey: 'userId', sourceKey: 'id'})
   };
   return UserEntity;
 };

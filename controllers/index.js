@@ -7,14 +7,14 @@ const indexService = require('../core/services/index')
 
 module.exports = {
   // 注册用户
-  'GET /api/getLoginIn': [generic.dealAccessLog(), async (ctx, next) => {
+  'POST /api/postLoginIn': [generic.dealAccessLog(), async (ctx, next) => {
     const start = new Date();
     let ms;
     try {
-      let data = ctx.query
+      let data = ctx.request.body
       let result = new utilsType.Error()
       if (data.userNo && data.password) {
-        result = await indexService.getLoginIn(data)
+        result = await indexService.postLoginIn(data)
       }
       ctx.rest(result)
     } catch (error) {

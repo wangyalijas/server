@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     userNo: DataTypes.STRING,
     workId: DataTypes.INTEGER,
     workType: DataTypes.STRING,
-    status: DataTypes.INTEGER,
+    beforeStatus: DataTypes.INTEGER,
+    afterStatus: DataTypes.INTEGER,
     isActive: DataTypes.BOOLEAN
   }, {});
   ProcessLog.associate = function(models) {

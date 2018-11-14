@@ -17,29 +17,47 @@ const User = model.UserEntity
 const UserPermission = model.UserPermission
 
 // 登录
-async function getLoginIn(msg) {
-  const isExit = await generic.isExit(User, {
-    userNo: msg.userNo,
-    isActive: true
-  })
-
+async function postLoginIn({userNo, password}) {
   function isAdmin() {
-    if (enumType.admin.name === 'admin' && enumType.admin.password === '123456') {
+    if (enumType.admin.userNo === userNo && enumType.admin.password === password) {
       return true
     }
     return false
   }
-
+  console.log(isAdmin)
   if (isAdmin) {
-    return new utilsType.Tips(true, )
+    let tips = new utilsType.Tips(true, '管理员登录成功', 200)
+    tips.isAdmin = true
+    return tips
+  } else {
+    let user = await User.findAll({
+      include: [
+        {
+          association: User.permission,
+          through: {
+            where: {
+              isActive: true
+            }
+          }
+        }
+      ],
+      where: {
+        isActive: true,
+        userNo: userNo,
+        password: password
+      },
+      raw: true
+    })
+    let result
+    if (user) {
+      result.isAdmin = false
+      result = extension.cloneTo(user, userEntityType.show)
+    } else {
+      result = new utilsType.Tips(false, '登录失败！', 500)
+    }
+    return result
   }
 
-  if (!isExit[0] && isAdmin) {
-    await User.create(extension.cloneTo(msg, userEntityType.Add))
-    return new utilsType.Tips(true, '注册成功！')
-  } else {
-    return new utilsType.Tips(false, '非法访问！', 500)
-  }
 }
 
 // 获取用户信息
@@ -61,11 +79,10 @@ async function getUser(msg) {
   })
 }
 
-// 删除注册用户
 // 获取注册用户信息
 async function getRegisterUser({currentPage, pageSize}) {
   let pagination = paginateTypes.pagination(currentPage, pageSize)
-  let result = await User.findAll({
+  let result = await UserPermission.findAll({
     include: [
       {
         model: UserPermission,
@@ -83,7 +100,7 @@ async function getRegisterUser({currentPage, pageSize}) {
 
 // 删除注册用户
 async function deleteRegisterUser({userId}) {
-  await User.update({
+  await UserPermission.update({
     isActive: false
   }, {
     where: {
@@ -101,6 +118,7 @@ async function postUserPermission(msg) {
     }
     return false
   }
+
   // 检查数据格式是否正确
   const illegalArr = extension.verifyMatchRegular(msg, verifyRule.permission)
   if (!isAdmin) return new utilsType.Tips(false, '没有权限！', 500)
@@ -131,7 +149,7 @@ async function postUserPermission(msg) {
 module.exports = {
   getUser,
   postUserPermission,
-  getLoginIn,
+  postLoginIn,
   getRegisterUser,
   deleteRegisterUser
 }

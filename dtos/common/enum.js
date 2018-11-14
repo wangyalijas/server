@@ -68,7 +68,7 @@ module.exports = {
   },
   // 管理员账号密码
   admin: {
-    name: 'admin',
+    userNo: 'admin',
     password: '123456'
   }
 }
