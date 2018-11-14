@@ -16,21 +16,14 @@ const model = require('../models/index') // orm映射实体
 const User = model.UserEntity
 const UserPermission = model.UserPermission
 
-// 登录
+// 登录是否是管理员
 async function postLoginIn({userNo, password}) {
-  function isAdmin() {
-    if (enumType.admin.userNo === userNo && enumType.admin.password === password) {
-      return true
-    }
-    return false
-  }
-
-  if (isAdmin()) {
+  if (enumType.admin.userNo === userNo && enumType.admin.password === password) {
     let tips = new utilsType.Tips(true, '管理员登录成功', 200)
     tips.isAdmin = true
     return tips
   }
-
+  console.log(1)
   let user = await User.findAll({
     include: [
       {
@@ -44,11 +37,10 @@ async function postLoginIn({userNo, password}) {
     ],
     where: {
       isActive: true,
-      userNo: userNo,
-      userNo: password
     },
     raw: true
   })
+  console.log(2)
   console.log(user)
   let result
   if (user) {
@@ -58,21 +50,20 @@ async function postLoginIn({userNo, password}) {
     result = new utilsType.Tips(false, '登录失败！', 500)
   }
   return result
-
 }
 
-// 获取用户信息
+// 获取快捷搜索用户
 async function getUser(msg) {
   return await User.findAll({
     attributes: ['id', 'userNo', 'name'],
     where: {
       [Op.or]: [{
         name: {
-          [Op.like]: `%${msg.keyWord}%`
+          [Op.like]: `%${msg.keyword}%`
         }
       }, {
         userNo: {
-          [Op.like]: `%${msg.keyWord}%`
+          [Op.like]: `%${msg.keyword}%`
         }
       }]
     },
@@ -148,9 +139,10 @@ async function postUserPermission(msg) {
 }
 
 module.exports = {
+  postLoginIn,
   getUser,
   postUserPermission,
-  postLoginIn,
+  getUserPermissionEnum,
   getRegisterUser,
   deleteRegisterUser
 }

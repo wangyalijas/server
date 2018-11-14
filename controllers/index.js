@@ -22,6 +22,22 @@ module.exports = {
       logUtil.logError(ctx, error, ms)
     }
   }],
+  // 查找用户权限
+  'GET /api/getUserPermissionEnum': [generic.dealAccessLog(), async (ctx, next) => {
+    const start = new Date();
+    let ms;
+    try {
+      let data = ctx.query
+      let result = new utilsType.Error()
+      if (data.keyword) {
+        result = await indexService.getUserPermissionEnum(data)
+      }
+      ctx.rest(result)
+    } catch (error) {
+      ms = new Date() - start;
+      logUtil.logError(ctx, error, ms)
+    }
+  }],
   // 查找用户
   'GET /api/getUser': [generic.dealAccessLog(), async (ctx, next) => {
     const start = new Date();
@@ -29,7 +45,7 @@ module.exports = {
     try {
       let data = ctx.query
       let result = new utilsType.Error()
-      if (data.keyWord) {
+      if (data.keyword) {
         result = await indexService.getUser(data)
       }
       ctx.rest(result)
@@ -45,7 +61,7 @@ module.exports = {
     try {
       let data = ctx.query
       let result = new utilsType.Error()
-      if (data.currentPage && data.pageSize){
+      if (data.currentPage && data.pageSize) {
         result = await indexService.getRegisterUser(data)
       }
       ctx.rest(result)
@@ -56,21 +72,21 @@ module.exports = {
   }],
   // 删除用户权限
   'DELETE /api/deleteRegisterUser': [generic.dealAccessLog(), async (ctx, next) => {
-  const start = new Date();
-  let ms;
-  try {
-    let data = ctx.query
-    let result = new utilsType.Error()
-    if (data.userId){
-      result = await indexService.deleteRegisterUser(data)
+    const start = new Date();
+    let ms;
+    try {
+      let data = ctx.query
+      let result = new utilsType.Error()
+      if (data.userId) {
+        result = await indexService.deleteRegisterUser(data)
+      }
+      ctx.rest(result)
+    } catch (error) {
+      ms = new Date() - start;
+      logUtil.logError(ctx, error, ms)
     }
-    ctx.rest(result)
-  } catch (error) {
-    ms = new Date() - start;
-    logUtil.logError(ctx, error, ms)
-  }
-}],
-  // 获取权限信息
+  }],
+  // 获取权限信息-字典
   'GET /api/getPermissionEnum': [generic.dealAccessLog(), async (ctx, next) => {
     const start = new Date();
     let ms;
