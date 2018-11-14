@@ -24,39 +24,40 @@ async function postLoginIn({userNo, password}) {
     }
     return false
   }
-  console.log(isAdmin)
-  if (isAdmin) {
+
+  if (isAdmin()) {
     let tips = new utilsType.Tips(true, '管理员登录成功', 200)
     tips.isAdmin = true
     return tips
-  } else {
-    let user = await User.findAll({
-      include: [
-        {
-          association: User.permission,
-          through: {
-            where: {
-              isActive: true
-            }
+  }
+
+  let user = await User.findAll({
+    include: [
+      {
+        association: User.permission,
+        through: {
+          where: {
+            isActive: true
           }
         }
-      ],
-      where: {
-        isActive: true,
-        userNo: userNo,
-        password: password
-      },
-      raw: true
-    })
-    let result
-    if (user) {
-      result.isAdmin = false
-      result = extension.cloneTo(user, userEntityType.show)
-    } else {
-      result = new utilsType.Tips(false, '登录失败！', 500)
-    }
-    return result
+      }
+    ],
+    where: {
+      isActive: true,
+      userNo: userNo,
+      userNo: password
+    },
+    raw: true
+  })
+  console.log(user)
+  let result
+  if (user) {
+    result.isAdmin = false
+    result = extension.cloneTo(user, userEntityType.show)
+  } else {
+    result = new utilsType.Tips(false, '登录失败！', 500)
   }
+  return result
 
 }
 
