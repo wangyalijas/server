@@ -30,13 +30,15 @@ async function postLoginIn({userNo, password}) {
         association: User.permission,
         through: {
           where: {
-            isActive: true
+            isActive: true,
           }
         }
       }
     ],
     where: {
       isActive: true,
+      userNo: userNo,
+      userNo: password
     },
     raw: true
   })
@@ -44,8 +46,9 @@ async function postLoginIn({userNo, password}) {
   console.log(user)
   let result
   if (user) {
-    result.isAdmin = false
-    result = extension.cloneTo(user, userEntityType.show)
+    result = extension.cloneTo(user ,userEntityType.show, {
+      isAdmin: false
+    })
   } else {
     result = new utilsType.Tips(false, '登录失败！', 500)
   }
@@ -142,7 +145,7 @@ module.exports = {
   postLoginIn,
   getUser,
   postUserPermission,
-  getUserPermissionEnum,
+  // getUserPermissionEnum,
   getRegisterUser,
   deleteRegisterUser
 }
